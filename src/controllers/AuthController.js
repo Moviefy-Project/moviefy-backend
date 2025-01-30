@@ -1,5 +1,6 @@
 const AuthService = require("../services/AuthService");
 const fs = require("fs");
+const passport = require("passport");
 
 class AuthController {
   static async register(req, res) {
@@ -51,6 +52,27 @@ class AuthController {
   static async logout(req, res) {
     res.clearCookie("authToken");
     res.status(200).json({ message: "Logout successful" });
+  }
+
+  static async googleCallBack(req, res, next) {
+    passport.authenticate(
+      "google",
+      { failureRedirect: "/" },
+      (err, userData) => {
+        if (err) {
+          console.log("Google authentication failed:", err);
+          return res
+            .status(500)
+            .json({ error: "Google authentication failed" });
+        }
+
+        return res.status(200).json({
+          success: true,
+          token: userData.token,
+          user: userData.user,
+        });
+      }
+    )(req, res, next);
   }
 }
 
