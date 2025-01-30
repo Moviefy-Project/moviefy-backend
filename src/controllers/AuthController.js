@@ -50,8 +50,24 @@ class AuthController {
   }
 
   static async logout(req, res) {
-    res.clearCookie("authToken");
-    res.status(200).json({ message: "Logout successful" });
+    try {
+      res.clearCookie("authToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Strict",
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Logout successful",
+      });
+    } catch (error) {
+      console.error("Logout Error:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Logout failed",
+      });
+    }
   }
 
   static async googleCallBack(req, res, next) {
@@ -68,7 +84,7 @@ class AuthController {
 
         return res.status(200).json({
           success: true,
-          token: userData.token,
+          authToken: userData.token,
           user: userData.user,
         });
       }
