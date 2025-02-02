@@ -1,6 +1,7 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const authRoutes = require("./routes/AuthRoutes.js");
+const contentRoutes = require("./routes/ContentRoutes.js");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -36,6 +37,7 @@ app.get("/dashboard", (req, res) => {
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/auth", authRoutes);
+app.use("/content", contentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on: http://localhost:${PORT}`);

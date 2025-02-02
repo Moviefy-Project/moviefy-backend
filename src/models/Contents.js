@@ -52,9 +52,9 @@ Contents.init(
     }
 );
 
-Contents.belongsTo(Categories, { foreignKey: 'category_id', as: 'Category' });
+Contents.belongsTo(Categories, { foreignKey: 'category_id', as: 'category' });
 Categories.hasMany(Contents, { foreignKey: 'category_id' });
-Contents.belongsTo(Ratings, { foreignKey: 'rating_id', as: 'Rating' });
+Contents.belongsTo(Ratings, { foreignKey: 'rating_id', as: 'rating' });
 Ratings.hasMany(Contents, { foreignKey: 'rating_id' });
 
 module.exports = Contents;
