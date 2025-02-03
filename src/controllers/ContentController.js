@@ -59,12 +59,50 @@ class ContentController {
       return res.status(200).json(result);
     } catch (error) {
       console.error("Error while getting bookmarked content:", error);
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "An error occurred while getting bookmarked content.",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "An error occurred while getting bookmarked content.",
+      });
+    }
+  }
+
+  static async getAllMovies(req, res) {
+    try {
+      const allMovies = await ContentService.getAllMovies();
+      return res.status(200).json(allMovies);
+    } catch (error) {
+      console.error("Error while getting all movies:", error);
+      return res.status(400).json({
+        success: false,
+        message: "An error occurred while getting all movies.",
+      });
+    }
+  }
+
+  static async getAllTVSeries(req, res) {
+    try {
+      const allTVSeries = await ContentService.getAllTVSeries();
+      return res.status(200).json(allTVSeries);
+    } catch (error) {
+      console.error("Error while getting all TV series:", error);
+      return res.status(400).json({
+        success: false,
+        message: "An error occurred while getting all TV series.",
+      });
+    }
+  }
+
+  static async searchContent(req, res) {
+    try {
+      const { search_query } = req.query;
+      const searchResults = await ContentService.searchContent(search_query);
+      return res.status(200).json(searchResults);
+    } catch (error) {
+      console.error("Error while searching content:", error);
+      return res.status(400).json({
+        success: false,
+        message: "An error occurred while searching content.",
+      });
     }
   }
 }

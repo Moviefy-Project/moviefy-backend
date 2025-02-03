@@ -3,6 +3,7 @@ const Bookmark = require("../models/Bookmarks");
 const User = require("../models/Users");
 const Category = require("../models/Categories");
 const Rating = require("../models/Ratings");
+const { Op } = require("sequelize");
 
 class ContentService {
   static async addContent(contentData) {
@@ -33,7 +34,12 @@ class ContentService {
     try {
       const trendingContent = await Content.findAll({
         where: { is_trending: true },
-        attributes: ["id", "content_title", "content_year", "content_thumbnail"],
+        attributes: [
+          "id",
+          "content_title",
+          "content_year",
+          "content_thumbnail",
+        ],
         include: [
           {
             model: Category,
@@ -61,7 +67,12 @@ class ContentService {
   static async getAllContent() {
     try {
       const allContent = await Content.findAll({
-        attributes: ["id", "content_title", "content_year", "content_thumbnail"],
+        attributes: [
+          "id",
+          "content_title",
+          "content_year",
+          "content_thumbnail",
+        ],
         include: [
           {
             model: Category,
@@ -154,6 +165,122 @@ class ContentService {
       return {
         success: false,
         message: "An error occurred while getting bookmarked content.",
+      };
+    }
+  }
+
+  static async getAllMovies() {
+    try {
+      const allMovies = await Content.findAll({
+        attributes: [
+          "id",
+          "content_title",
+          "content_year",
+          "content_thumbnail",
+        ],
+        include: [
+          {
+            model: Category,
+            as: "category",
+            attributes: ["category_name"],
+          },
+          {
+            model: Rating,
+            as: "rating",
+            attributes: ["rating_name"],
+          },
+        ],
+        where: {
+          category_id: 2,
+        },
+      });
+
+      return { success: true, movies: allMovies };
+    } catch (error) {
+      console.error("Error while fetching movies:", error);
+      return {
+        success: false,
+        message: "An error occurred while fetching movies.",
+      };
+    }
+  }
+
+  static async getAllTVSeries() {
+    try {
+      const allTVSeries = await Content.findAll({
+        attributes: [
+          "id",
+          "content_title",
+          "content_year",
+          "content_thumbnail",
+        ],
+        include: [
+          {
+            model: Category,
+            as: "category",
+            attributes: ["category_name"],
+          },
+          {
+            model: Rating,
+            as: "rating",
+            attributes: ["rating_name"],
+          },
+        ],
+        where: {
+          category_id: 1,
+        },
+      });
+
+      return { success: true, tvSeries: allTVSeries };
+    } catch (error) {
+      console.error("Error while fetching TV Series:", error);
+      return {
+        success: false,
+        message: "An error occurred while fetching TV Series.",
+      };
+    }
+  }
+
+  static async searchContent(searchQuery) {
+    try {
+      if (!searchQuery) {
+        return { success: false, message: "Search query is required" };
+      }
+
+      const results = await Content.findAll({
+        where: {
+          content_title: { [Op.iLike]: `${searchQuery}%` },
+        },
+        attributes: [
+          "id",
+          "content_title",
+          "content_year",
+          "content_thumbnail",
+        ],
+        include: [
+          {
+            model: Category,
+            as: "category",
+            attributes: ["category_name"],
+          },
+          {
+            model: Rating,
+            as: "rating",
+            attributes: ["rating_name"],
+          },
+        ],
+      });
+
+      if (!results || results.length === 0) {
+        return { success: false, message: "No content found" };
+      }
+
+      return { success: true, contents: results };
+    } catch (error) {
+      console.error("🔴 Error while searching content:", error);
+      return {
+        success: false,
+        message: "An error occurred while searching content.",
       };
     }
   }

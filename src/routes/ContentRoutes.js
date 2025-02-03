@@ -9,5 +9,8 @@ router.get("/trending-content", authenticateToken, ContentController.getTrending
 router.get("/all-content", authenticateToken, ContentController.getAllContent);
 router.post("/bookmark-content", authenticateToken, ContentController.bookmarkContent);
 router.get("/bookmarked-content", authenticateToken, ContentController.getBookmarkedContent);
+router.get("/all-movies", authenticateToken, ContentController.getAllMovies);
+router.get("/all-series", authenticateToken, ContentController.getAllTVSeries);
+router.get("/search-content", authenticateToken, ContentController.searchContent);
 
 module.exports = router;
